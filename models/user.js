@@ -31,7 +31,23 @@ class User {
     }
 
     /** Authenticate: is this username/password valid? Returns boolean. */
-    static async authenticate(username, password) {}
+    static async authenticate(username, password) {
+        const result = await db.query(
+            `
+            SELECT * FROM users
+            WHERE username = $1
+            `,
+            [username]
+        );
+
+        const user = result.rows[0];
+
+        if (await bcrypt.compare(password, user.password)) {
+            return true;
+        }
+
+        return false;
+    }
 
     /** Update last_login_at for user */
     static async updateLoginTimestamp(username) {}

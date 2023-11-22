@@ -2,6 +2,7 @@
 
 const db = require('../db');
 const bcrypt = require('bcrypt');
+const ExpressError = require('../expressError');
 const { BCRYPT_WORK_FACTOR } = require('../config');
 
 /** User of the site. */
@@ -50,7 +51,28 @@ class User {
     }
 
     /** Update last_login_at for user */
-    static async updateLoginTimestamp(username) {}
+    static async updateLoginTimestamp(username) {
+        const result = await db.query(
+            `
+            UPDATE users
+            SET last_login_at = CURRENT_TIMESTAMP
+            WHERE username = $1
+            RETURNING last_login_at
+            `,
+            [username]
+        );
+
+        const user = result.rows[0];
+
+        if (!user) {
+            throw new ExpressError(
+                `The user with the username '${username}' does not exist!`,
+                404
+            );
+        }
+
+        return user.last_login_at;
+    }
 
     /** All: basic info on all users:
      * [{username, first_name, last_name, phone}, ...] */
@@ -64,7 +86,26 @@ class User {
      *          phone,
      *          join_at,
      *          last_login_at } */
-    static async get(username) {}
+    static async get(username) {
+        const result = await db.query(
+            `
+            SELECT * FROM users
+            WHERE username = $1
+            `,
+            [username]
+        );
+
+        const user = result.rows[0];
+
+        if (!user) {
+            throw new ExpressError(
+                `The user with the username '${username}' does not exist!`,
+                404
+            );
+        }
+
+        return user;
+    }
 
     /** Return messages from this user.
      *

@@ -114,7 +114,43 @@ class User {
      * where to_user is
      *   {username, first_name, last_name, phone}
      */
-    static async messagesFrom(username) {}
+    static async messagesFrom(username) {
+        // Check if user exists
+        const userCheck = await db.query(
+            `SELECT username FROM users WHERE username = $1`,
+            [username]
+        );
+
+        if (userCheck.rows.length === 0) {
+            throw new ExpressError(
+                `The user with the username '${username}' does not exist!`,
+                404
+            );
+        }
+
+        const results = await db.query(
+            `
+                SELECT m.id, u.username, u.first_name, u.last_name, u.phone, m.body, m.sent_at, m.read_at
+                FROM messages m
+                JOIN users u ON m.to_username = u.username
+                WHERE m.from_username = $1
+                `,
+            [username]
+        );
+
+        return results.rows.map((row) => ({
+            id: row.id,
+            body: row.body,
+            sent_at: row.sent_at,
+            read_at: row.read_at,
+            to_user: {
+                username: row.username,
+                first_name: row.first_name,
+                last_name: row.last_name,
+                phone: row.phone,
+            },
+        }));
+    }
 
     /** Return messages to this user.
      *

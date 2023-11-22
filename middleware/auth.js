@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = require('../config');
 
 /** Middleware: Authenticate user. */
-
 function authenticateJWT(req, res, next) {
     try {
         const tokenFromBody = req.body._token;
@@ -17,7 +16,6 @@ function authenticateJWT(req, res, next) {
 }
 
 /** Middleware: Requires user is authenticated. */
-
 function ensureLoggedIn(req, res, next) {
     if (!req.user) {
         return next({ status: 401, message: 'Unauthorized' });
@@ -27,7 +25,6 @@ function ensureLoggedIn(req, res, next) {
 }
 
 /** Middleware: Requires correct username. */
-
 function ensureCorrectUser(req, res, next) {
     try {
         if (req.user.username === req.params.username) {
@@ -40,8 +37,8 @@ function ensureCorrectUser(req, res, next) {
         return next({ status: 401, message: 'Unauthorized' });
     }
 }
-// end
 
+// end
 module.exports = {
     authenticateJWT,
     ensureLoggedIn,

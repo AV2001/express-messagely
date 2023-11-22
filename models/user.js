@@ -16,16 +16,13 @@ class User {
     }) {}
 
     /** Authenticate: is this username/password valid? Returns boolean. */
-
     static async authenticate(username, password) {}
 
     /** Update last_login_at for user */
-
     static async updateLoginTimestamp(username) {}
 
     /** All: basic info on all users:
      * [{username, first_name, last_name, phone}, ...] */
-
     static async all() {}
 
     /** Get: get user by username
@@ -36,7 +33,6 @@ class User {
      *          phone,
      *          join_at,
      *          last_login_at } */
-
     static async get(username) {}
 
     /** Return messages from this user.
@@ -46,7 +42,6 @@ class User {
      * where to_user is
      *   {username, first_name, last_name, phone}
      */
-
     static async messagesFrom(username) {}
 
     /** Return messages to this user.
@@ -56,7 +51,6 @@ class User {
      * where from_user is
      *   {username, first_name, last_name, phone}
      */
-
     static async messagesTo(username) {}
 }
 

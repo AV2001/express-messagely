@@ -1,7 +1,6 @@
 /** Common config for message.ly */
 
 // read .env files and make environmental variables
-
 require('dotenv').config();
 
 const DB_URI =

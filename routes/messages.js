@@ -29,6 +29,14 @@ router.get('/:id', async (req, res, next) => {
  *   {message: {id, from_username, to_username, body, sent_at}}
  *
  **/
+router.post('/', async (req, res, next) => {
+    try {
+        const newMessage = await Message.create(req.body);
+        return res.json({ message: newMessage });
+    } catch (err) {
+        return next(err);
+    }
+});
 
 /** POST/:id/read - mark message as read:
  *

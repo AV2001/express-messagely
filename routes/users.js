@@ -21,6 +21,15 @@ router.get('/', async (req, res, next) => {
  * => {user: {username, first_name, last_name, phone, join_at, last_login_at}}
  *
  **/
+router.get('/:username', async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        const user = await User.get(username);
+        return res.json({ user });
+    } catch (err) {
+        return next(err);
+    }
+});
 
 /** GET /:username/to - get messages to user
  *

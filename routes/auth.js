@@ -10,6 +10,21 @@ const { SECRET_KEY } = require('../config');
  * Make sure to update their last-login!
  *
  **/
+router.post('/login', async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.authenticate(username, password);
+        if (user) {
+            User.updateLoginTimestamp(username);
+            const token = jwt.sign({ username }, SECRET_KEY);
+            return res.json({ token });
+        } else {
+            throw new ExpressError('Invalid username/password!', 400);
+        }
+    } catch (err) {
+        return next(err);
+    }
+});
 
 /** POST /register - register user: registers, logs in, and returns token.
  *

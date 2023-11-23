@@ -59,5 +59,14 @@ router.get('/:username/to', async (req, res, next) => {
  *                 to_user: {username, first_name, last_name, phone}}, ...]}
  *
  **/
+router.get('/:username/from', async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        const messages = User.messagesFrom(username);
+        return res.json({ messages });
+    } catch (err) {
+        return next(err);
+    }
+});
 
 module.exports = router;

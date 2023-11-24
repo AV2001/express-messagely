@@ -43,11 +43,7 @@ class User {
 
         const user = result.rows[0];
 
-        if (await bcrypt.compare(password, user.password)) {
-            return true;
-        }
-
-        return false;
+        return user && (await bcrypt.compare(password, user.password));
     }
 
     /** Update last_login_at for user */
@@ -97,7 +93,7 @@ class User {
     static async get(username) {
         const result = await db.query(
             `
-            SELECT * FROM users
+            SELECT username, first_name, last_name, phone, join_at, last_login_at FROM users
             WHERE username = $1
             `,
             [username]

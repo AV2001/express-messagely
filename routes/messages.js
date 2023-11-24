@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Message = require('../models/message');
-const { ensureCorrectUser } = require('../middleware/auth');
+const { ensureLoggedIn, ensureCorrectUser } = require('../middleware/auth');
 
 /** GET /:id - get detail of message.
  *
@@ -15,7 +15,7 @@ const { ensureCorrectUser } = require('../middleware/auth');
  * Make sure that the currently-logged-in users is either the to or from user.
  *
  **/
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     try {
         const message = await Message.get(req.params.id);
         return res.json({ message });
@@ -30,7 +30,7 @@ router.get('/:id', async (req, res, next) => {
  *   {message: {id, from_username, to_username, body, sent_at}}
  *
  **/
-router.post('/', async (req, res, next) => {
+router.post('/', ensureLoggedIn, async (req, res, next) => {
     try {
         const newMessage = await Message.create(req.body);
         return res.json({ message: newMessage });
@@ -46,9 +46,10 @@ router.post('/', async (req, res, next) => {
  * Make sure that the only the intended recipient can mark as read.
  *
  **/
-router.post('/:id/read', ensureCorrectUser, async (req, res, next) => {
+router.post('/:id/read', ensureLoggedIn, async (req, res, next) => {
     try {
-        const markAsRead = await Message.markRead(req.params.id);
+        const messageMarkedAsRead = await Message.markRead(req.params.id);
+        return res.json({ message: messageMarkedAsRead });
     } catch (err) {
         return next(err);
     }
